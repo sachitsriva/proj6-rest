@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Saved Brevet Times</title>
+</head>
+<body>
+  <h1>Saved Brevet Times</h1>
+
+  <p><a href="{{ url_for('index') }}">Back to calculator</a></p>
+
+  {% if error %}
+    <p>{{ error }}</p>
+  {% elif not submissions %}
+    <p>No controls have been submitted yet.</p>
+  {% else %}
+    {% for submission in submissions %}
+      <h2>Submission {{ loop.index }}</h2>
+
+      <table border="1" cellpadding="8">
+        <tr>
+          <th>Kilometers</th>
+          <th>Location</th>
+          <th>Open</th>
+          <th>Close</th>
+        </tr>
+
+        {% for control in submission.controls %}
+          <tr>
+            <td>{{ control.km }}</td>
+            <td>{{ control.location }}</td>
+            <td>{{ control.open }}</td>
+            <td>{{ control.close }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% endfor %}
+  {% endif %}
+</body>
+</html>

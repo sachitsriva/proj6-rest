@@ -1,18 +1,37 @@
 version: '3'  # version of compose format 
 
 services:
-  laptop-service:
-    build: ./laptop  
+  db:
+    image: mongo:7.0
     volumes:
-      - ./laptop:/usr/src/app 
+      - brevet-data:/data/db
+
+  calculator:
+    build: ./calculator
+    command: python -u flask_brevets.py --port 5000
     ports:
-      - 5001:80  # host:container
+      - "5002:5000"
+    depends_on:
+      - db
+
+  laptop-service:
+    build:
+      context: ./laptop
+      dockerfile: ../calculator/Dockerfile
+    command: python -u api.py
+    ports:
+      - "5001:80"
+    depends_on:
+      - db
 
   website:
-    image: php:apache  
+    image: php:apache
     volumes:
-      - ./website:/var/www/html 
+      - ./website:/var/www/html
     ports:
-      - 5000:80  # host:container
+      - "5003:80"
     depends_on:
-      - laptop-service  # website is not going to work unless laptop-service is running
+      - laptop-service
+
+volumes:
+  brevet-data:
